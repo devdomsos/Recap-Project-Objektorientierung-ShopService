@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,5 +33,23 @@ class ShopServiceTest {
 
         //THEN
         assertNull(actual);
+    }
+
+    @Test
+    void filterOrders_Test() {
+        //GIVEN
+        ShopService shopService = new ShopService();
+        OrderStatus orderStatus = OrderStatus.PROCESSING;
+        List<String> productsIds = List.of("1");
+        Order newOrder = shopService.addOrder(productsIds);
+        //WHEN
+
+        List<Order> actual = shopService.filterOrders(orderStatus);
+
+        //THEN
+        List<Order> expected = List.of(
+                new Order(newOrder.id(), List.of(new Product("1", "Apfel")), orderStatus)
+        );
+        assertEquals(expected, actual);
     }
 }
