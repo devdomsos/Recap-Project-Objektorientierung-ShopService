@@ -27,4 +27,9 @@ public class ShopService {
                 .stream()
                 .filter(o -> orderStatus == o.orderStatus()).toList();
     }
+
+    public Order updateOrderStatusById(String orderId, OrderStatus orderStatus) {
+        Order orderToUpdate = orderRepo.getOrderById(orderId);
+        return orderToUpdate.withOrderStatus(orderStatus);
+    }
 }
