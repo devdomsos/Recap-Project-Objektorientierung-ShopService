@@ -58,8 +58,6 @@ class ShopServiceTest {
             fail("Product does not exist: " + e.getMessage());
         }
 
-        //WHEN
-
         List<Order> actual = shopService.filterOrders(orderStatus);
 
         //THEN
@@ -67,5 +65,23 @@ class ShopServiceTest {
                 new Order(newOrder.id(), List.of(new Product("1", "Apfel")), orderStatus)
         );
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testUpdateOrderStatusById_whenValidProductId_expectSuccess() {
+        //GIVEN
+        ShopService shopService = new ShopService();
+        List<String> productsIds = List.of("1");
+        OrderStatus newOrderStatus = OrderStatus.IN_DELIVERY;
+        Order newOrder = null;
+        //WHEN
+        try {
+            newOrder = shopService.addOrder(productsIds);
+        } catch (ProductDoesNotExist e) {
+            fail("Product does not exist: " + e.getMessage());
+        }
+        Order updatedOrder = shopService.updateOrderStatusById(newOrder.id(), newOrderStatus);
+        // THEN
+        assertEquals(newOrderStatus, updatedOrder.orderStatus());
     }
 }
