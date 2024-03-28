@@ -8,31 +8,39 @@ import static org.junit.jupiter.api.Assertions.*;
 class ShopServiceTest {
 
     @Test
-    void addOrderTest() {
+    void testAddOrder_Success() throws ProductDoesNotExist {
         //GIVEN
         ShopService shopService = new ShopService();
         List<String> productsIds = List.of("1");
+        Order actual = null;
 
         //WHEN
-        Order actual = shopService.addOrder(productsIds);
+        try {
+            actual = shopService.addOrder(productsIds);
+        } catch (ProductDoesNotExist e) {
+            fail("Error: " + e.getMessage());
+        }
 
         //THEN
         Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.PROCESSING);
         assertEquals(expected.products(), actual.products());
         assertNotNull(expected.id());
     }
-
     @Test
-    void addOrderTest_whenInvalidProductId_expectNull() {
+    void testAddOrder_whenInvalidProductId_expectProductDoesNotExistException() {
         //GIVEN
         ShopService shopService = new ShopService();
         List<String> productsIds = List.of("1", "2");
 
-        //WHEN
-        Order actual = shopService.addOrder(productsIds);
+        Order actual = null;
 
-        //THEN
-        assertNull(actual);
+        //WHEN
+        try {
+            actual = shopService.addOrder(productsIds);
+        } catch (ProductDoesNotExist e) {
+            //THEN
+            assertThrows(ProductDoesNotExist.class, () -> shopService.addOrder(productsIds));
+        }
     }
 
     @Test
@@ -41,7 +49,15 @@ class ShopServiceTest {
         ShopService shopService = new ShopService();
         OrderStatus orderStatus = OrderStatus.PROCESSING;
         List<String> productsIds = List.of("1");
-        Order newOrder = shopService.addOrder(productsIds);
+        Order newOrder = null;
+
+        //WHEN
+        try {
+            newOrder = shopService.addOrder(productsIds);
+        } catch (ProductDoesNotExist e) {
+            fail("Product does not exist: " + e.getMessage());
+        }
+
         //WHEN
 
         List<Order> actual = shopService.filterOrders(orderStatus);
