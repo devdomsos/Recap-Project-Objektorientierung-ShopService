@@ -47,18 +47,16 @@ class ProductRepoTest {
         //THEN
         Product expected = new Product("2", "Banane");
         assertEquals(actual, expected);
-        assertEquals(repo.getProductById("2"), expected);
+        assertEquals(repo.getProductById("2"), Optional.of(expected));
     }
 
     @org.junit.jupiter.api.Test
-    void removeProduct() {
+    void testRemoveProductOptionalEmpty() {
         //GIVEN
         ProductRepo repo = new ProductRepo();
-
         //WHEN
         repo.removeProduct("1");
-
         //THEN
-        assertNull(repo.getProductById("1"));
+        assertFalse(repo.getProductById("1").isPresent());
     }
 }
