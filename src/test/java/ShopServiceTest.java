@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -8,10 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class ShopServiceTest {
 
     @Test
-    void testAddOrder_Success() throws ProductDoesNotExist {
+    void testAddOrder_Success() {
         //GIVEN
         ShopService shopService = new ShopService();
         List<String> productsIds = List.of("1");
+        Instant orderTimestamp = Instant.now();
         Order actual = null;
 
         //WHEN
@@ -22,7 +24,7 @@ class ShopServiceTest {
         }
 
         //THEN
-        Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.PROCESSING);
+        Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.PROCESSING, orderTimestamp);
         assertEquals(expected.products(), actual.products());
         assertNotNull(expected.id());
     }
@@ -49,6 +51,7 @@ class ShopServiceTest {
         ShopService shopService = new ShopService();
         OrderStatus orderStatus = OrderStatus.PROCESSING;
         List<String> productsIds = List.of("1");
+        Instant orderTimestamp = Instant.now();
         Order newOrder = null;
 
         //WHEN
@@ -62,7 +65,7 @@ class ShopServiceTest {
 
         //THEN
         List<Order> expected = List.of(
-                new Order(newOrder.id(), List.of(new Product("1", "Apfel")), orderStatus)
+                new Order(newOrder.id(), List.of(new Product("1", "Apfel")), orderStatus, newOrder.orderTimestamp())
         );
         assertEquals(expected, actual);
     }
